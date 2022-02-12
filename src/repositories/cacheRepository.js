@@ -28,4 +28,8 @@ module.exports = new class CacheRepository {
     delete(id) {
         return Cache.findByIdAndRemove(id);
     }
+
+    deleteAll() {
+        return Cache.remove();
+    }
 }
