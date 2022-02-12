@@ -22,7 +22,7 @@ module.exports = new class CacheRepository {
             expires: Date.now() + ttl,
         }
 
-        return Cache.findByIdAndUpdate(id, updatedCache);
+        return Cache.findByIdAndUpdate(id, updatedCache, {new: true});
     }
 
     delete(id) {

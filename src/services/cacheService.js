@@ -3,7 +3,11 @@
 const { cacheSize } = require('../config/opts');
 const cacheRepository = require('../repositories/cacheRepository');
 
-const getCacheItemWithClosestExpireTime = async()=>{
+/*
+* Get cache item which is the oldest
+*/
+
+const getOldestCacheItem = async()=>{
     const getAllCache = await this.get();
     getAllCache.sort(function(a, b) {
         return a.expires - b.expires;
@@ -11,30 +15,52 @@ const getCacheItemWithClosestExpireTime = async()=>{
     return getAllCache[0];  
 }
 
+/*
+* return all cacheItems from repository
+*/
 exports.get = async() =>{
     return await cacheRepository.getAll();
 }
 
+/*
+* return cacheItem by id from repository
+*/
 exports.getById = async(id) => {
     return await cacheRepository.getById(id);
 }
+
+/*
+* create cache item is cache is not full
+* if cache is full get the oldest cache item and update it
+*/
 
 exports.create = async(cache)=>{
    const getAllCache = await this.get();
    if(getAllCache.length < cacheSize){
         return await cacheRepository.create(cache);
    }
-   var item = await getCacheItemWithClosestExpireTime();
+   var item = await getOldestCacheItem();
    item.value = cache.value;
-   item.expires = cache.expires;
-   return await cacheRepository.create(item);
+   return await cacheRepository.update(item.id , item);
 }
+
+/*
+* update and return cacheItem from repository
+*/
 exports.update = async(id, body)=>{
     return await cacheRepository.update(id, body);
 }
+
+/*
+* delete cacheItem by id from repository
+*/
 exports.delete = async(id) => {
     await cacheRepository.delete(id);
 }
+
+/*
+* delete all cacheItems from repository
+*/
 exports.deleteAll = async()=>{
     await cacheRepository.deleteAll();
 }

@@ -2,6 +2,10 @@
 const { ttl } = require('../config/opts');
 const cacheService = require('../services/cacheService');
 
+/*
+* return all cache items as response
+*/
+
 exports.get = async (req, res) => {
     try{
         const allCache = await cacheService.get();
@@ -11,13 +15,19 @@ exports.get = async (req, res) => {
     }
 };
 
+/*
+* return cache item based on id and return as response
+* if no item found create new item with random string and return as response
+*/
+
 exports.getById = async(req, res) => {
     const _id = req.params.id;
     try{
         const cache = await cacheService.getById(_id);
         if(cache){
             console.log("Cache hit")
-            res.status(200).send(cache);
+            const updatedCache = await cacheService.update(_id,{value:cache.value})
+            return res.status(200).send(updatedCache);
         }
         console.log("Cache miss");
         const randomString = (Math.random() + 1).toString(36).substring(7);
@@ -39,6 +49,10 @@ exports.getById = async(req, res) => {
     }
 };
 
+/*
+* create cache item and return as response
+*/
+
 exports.post = async(req, res) => {
     const body = req.body;
     const cache = {
@@ -54,6 +68,9 @@ exports.post = async(req, res) => {
     
 };
 
+/*
+* update cache item and return as response
+*/
 exports.put = async(req, res) => {
     const _id = req.params.id;
     const body = req.body;
@@ -65,6 +82,10 @@ exports.put = async(req, res) => {
     }
 };
 
+/*
+* delete cache item
+*/
+
 exports.delete = async(req, res) => {
     try{
         await cacheService.delete(req.params.id);
@@ -73,6 +94,10 @@ exports.delete = async(req, res) => {
         console.error.bind(console, `Error ${e}`)
     }
 };
+
+/*
+* delete cache item
+*/
 
 exports.deleteAll = async(req, res) => {
     try{
