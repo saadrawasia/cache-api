@@ -4,6 +4,7 @@ const app = express();
 const port = 3000;
 
 const cacheRoutes = require('./routes/cacheRoutes');
+const indexRoutes = require("./routes/indexRoutes");
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -11,10 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
+app.use('/',indexRoutes);
 app.use('/cache', cacheRoutes);
 
 app.listen(port, () => {
