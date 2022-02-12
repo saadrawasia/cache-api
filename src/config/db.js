@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 
 var CacheSchema = new Schema({
     value: String,
-    expire: Number,
+    expires: Number,
 });
 
 

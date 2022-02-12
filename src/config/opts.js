@@ -1,2 +1,2 @@
-export const ttl = 10*1000;
-export const cacheSize = 10;
+exports.ttl = 10*1000;
+exports.cacheSize = 10;

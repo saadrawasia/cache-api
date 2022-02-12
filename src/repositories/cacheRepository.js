@@ -1,5 +1,6 @@
 'use strict';
 var Cache = require('../config/db');
+const { ttl } = require('../config/opts');
 module.exports = new class CacheRepository {
 
     getAll() {
@@ -18,7 +19,7 @@ module.exports = new class CacheRepository {
 
         const updatedCache = {
             value: cache.value,
-            ttl: cache.ttl,
+            expires: Date.now() + ttl,
         }
 
         return Cache.findByIdAndUpdate(id, updatedCache);

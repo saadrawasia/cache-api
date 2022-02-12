@@ -1,45 +1,58 @@
 'use strict';
 
+const { ttl } = require('../config/opts');
 const cacheRepository = require('../repositories/cacheRepository');
 
-exports.get = (req, res) => {
-    cacheRepository.getAll()
-        .then((cache) => {
-            res.status(200).send(cache);
-        }).catch(err => res.status(500).send(err))
+exports.get = async (req, res) => {
+    try{
+        const allCache = await cacheRepository.getAll();
+        res.status(200).send(allCache);
+    }catch(e){
+        es.status(500).send(e)
+    }
 };
 
-exports.getById = (req, res) => {
+exports.getById = async(req, res) => {
     const _id = req.params.id;
-
-    cacheRepository.getById(_id)
-        .then((cache) => {
-            res.status(200).send(cache);
-        }).catch(err => res.status(500).send(err))
+    try{
+        const cache = await  cacheRepository.getById(_id)
+        res.status(200).send(cache);
+    }catch(e){
+        res.status(500).send(e)
+    }
 };
 
-exports.post = (req, res) => {
+exports.post = async(req, res) => {
     const body = req.body;
-
-    cacheRepository.create(body)
-        .then((cache) => {
-            res.status(200).send(cache);
-        }).catch(err => res.status(500).send(err))
+    const cache = {
+        value: body.value,
+        expires: Date.now() + ttl,
+    }
+    try{
+       const createdCache =  await cacheRepository.create(cache);
+       res.status(200).send(createdCache);
+    }catch(e){
+        res.status(500).send(e)
+    }
+    
 };
 
-exports.put = (req, res) => {
+exports.put = async(req, res) => {
     const _id = req.params.id;
     const body = req.body;
-
-    cacheRepository.update(_id, body)
-        .then((cache) => {
-            res.status(201).send(cache);
-        }).catch(err => res.status(500).send(err))
+    try{
+        const updatedCache = await cacheRepository.update(_id, body);
+        res.status(201).send(updatedCache);
+    }catch(e){
+        res.status(500).send(e)
+    }
 };
 
-exports.delete = (req, res) => {
-    cacheRepository.delete(req.params.id)
-        .then(() => {
-            res.status(200).send('Cache Removed');
-        }).catch(err => console.error.bind(console, `Error ${err}`))
+exports.delete = async(req, res) => {
+    try{
+        await cacheRepository.delete(req.params.id);
+        res.status(200).send('Cache Removed');
+    }catch(e){
+        console.error.bind(console, `Error ${e}`)
+    }
 };
