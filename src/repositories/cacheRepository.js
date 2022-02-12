@@ -1,7 +1,5 @@
 'use strict';
 var Cache = require('../config/db');
-
-
 module.exports = new class CacheRepository {
 
     getAll() {
